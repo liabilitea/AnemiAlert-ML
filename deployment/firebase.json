@@ -1,0 +1,22 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "python310",
+      "memory": "4GiB",
+      "timeoutSeconds": 60,
+      "maxInstances": 10,
+      "minInstances": 0,
+      "cpu": 2,
+      "concurrency": 10,
+      "labels": {
+        "app": "hemoglobin-prediction",
+        "version": "1.0.0"
+      },
+      "environmentVariables": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  ]
+}

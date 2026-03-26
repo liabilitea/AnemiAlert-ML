@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hemoglobin Prediction Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            background: #f8f9ff;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        input[type="file"]:hover {
+            border-color: #764ba2;
+            background: #f0f1ff;
+        }
+        
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .image-preview {
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-predict {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-predict:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-predict:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-clear {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .btn-clear:hover {
+            background: #e0e0e0;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            display: block;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            display: block;
+        }
+        
+        .result h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .result-value {
+            color: #333;
+            font-weight: 700;
+        }
+        
+        .hemoglobin-value {
+            font-size: 24px;
+            color: #667eea;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Hemoglobin Prediction</h1>
+        <p class="subtitle">Non-invasive hemoglobin level estimation</p>
+        
+        <div class="info-box">
+             Upload an eye image and enter patient details to get hemoglobin prediction
+        </div>
+        
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="eyeImage"> Eye Image *</label>
+                <input type="file" id="eyeImage" accept="image/*" required>
+                <div class="image-preview" id="imagePreview"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="irValue"> Infrared (IR) Value *</label>
+                <input type="number" id="irValue" placeholder="e.g., 123456.78" step="0.01" value="123456.78" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="redValue"> Red Light Value *</label>
+                <input type="number" id="redValue" placeholder="e.g., 98765.43" step="0.01" value="98765.43" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="age"> Age *</label>
+                <input type="number" id="age" placeholder="Enter age" min="0" max="120" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="gender"> Gender *</label>
+                <select id="gender" required>
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-predict" id="predictBtn"> Predict</button>
+                <button type="button" class="btn-clear" onclick="clearForm()"> Clear</button>
+            </div>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing image and calculating hemoglobin level...</p>
+            <small style="color: #666;">This may take 5-15 seconds</small>
+        </div>
+        
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://asia-southeast1-hemoglobin-prediction.cloudfunctions.net/predict/predict';
+        
+        // Image preview
+        document.getElementById('eyeImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Eye preview">`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '';
+            }
+        });
+        
+        // Form submission
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData();
+            formData.append('eye_image', document.getElementById('eyeImage').files[0]);
+            formData.append('ir_value', document.getElementById('irValue').value);
+            formData.append('red_value', document.getElementById('redValue').value);
+            formData.append('age', document.getElementById('age').value);
+            formData.append('gender', document.getElementById('gender').value);
+            
+            // Show loading
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('predictBtn').disabled = true;
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                // Hide loading
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('predictBtn').disabled = false;
+                
+                // Display result
+                displayResult(result, response.ok);
+                
+            } catch (error) {
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('predictBtn').disabled = false;
+                
+                displayResult({
+                    success: false,
+                    error: error.message
+                }, false);
+            }
+        });
+        
+        function displayResult(data, success) {
+            const resultDiv = document.getElementById('result');
+            
+            console.log('Displaying result:', data, 'Success:', success);
+            
+            // Check if data has success property and it's true
+            if (data && data.success === true) {
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <h3> Prediction Successful</h3>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Final Hemoglobin:</span>
+                        <span class="result-value hemoglobin-value">${data.hemoglobin_prediction.toFixed(2)} g/dL</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Eye-based Hb:</span>
+                        <span class="result-value">${data.eye_hemoglobin.toFixed(2)} g/dL</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">PPG-based Hb:</span>
+                        <span class="result-value">${data.ppg_hemoglobin.toFixed(2)} g/dL</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Weight Distribution:</span>
+                        <span class="result-value">${(data.weights.eye * 100).toFixed(0)}% Eye, ${(data.weights.ppg * 100).toFixed(0)}% PPG</span>
+                    </div>
+                    
+                    ${data.segmentation_stats ? `
+                    <div class="result-item">
+                        <span class="result-label">Mask Coverage:</span>
+                        <span class="result-value">${data.segmentation_stats.mask_coverage_percent.toFixed(2)}%</span>
+                    </div>
+                    ` : ''}
+                    
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid rgba(0,0,0,0.1); font-size: 12px; color: #666;">
+                         Normal hemoglobin ranges:<br>
+                        Men: 13.5-17.5 g/dL | Women: 12.0-15.5 g/dL
+                    </div>
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <h3> Prediction Failed</h3>
+                    <p style="color: #721c24; margin-top: 10px;">
+                        <strong>Error:</strong> ${data.error || data.detail || 'Unknown error occurred'}
+                    </p>
+                    <p style="color: #666; margin-top: 10px; font-size: 13px;">
+                        Please check your inputs and try again.
+                    </p>
+                `;
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('predictionForm').reset();
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('result').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

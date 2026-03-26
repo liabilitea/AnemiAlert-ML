@@ -1,0 +1,5 @@
+echo __pycache__/ > functions\.funcignore
+echo *.pyc >> functions\.funcignore
+echo .pytest_cache/ >> functions\.funcignore
+echo tests/ >> functions\.funcignore
+echo *.log >> functions\.funcignore

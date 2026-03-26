@@ -1,0 +1,81 @@
+venv_linux/
+# Model files (large, don't commit)
+functions/models/
+*.h5
+*.pb
+*.tflite
+*.onnx
+*.pkl
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Docker
+*.tar
+.dockerignore
+
+# Sample data (may contain sensitive info)
+tests/sample_data/*.jpg
+tests/sample_data/*.png
+tests/sample_data/*.json
+
+# Documentation drafts
+docs/drafts/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~venv_linux/ 
+node_modules/ 

@@ -1,0 +1,22 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "python310",
+      "memory": "4GiB",
+      "timeoutSeconds": 540,
+      "maxInstances": 10,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "__pycache__",
+        "*.pyc",
+        ".pytest_cache",
+        "tests"
+      ]
+    }
+  ]
+}
