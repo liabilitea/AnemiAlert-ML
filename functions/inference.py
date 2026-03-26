@@ -212,8 +212,8 @@ class HemoglobinPredictor:
             eye_hb = eye_future.result()
             ppg_hb = ppg_future.result()
         
-        # Step 5: Weighted average (60% eye, 40% PPG)
-        final_hb = (0.60 * eye_hb) + (0.40 * ppg_hb)
+        # Step 5: Weighted average (70% eye, 30% PPG)
+        final_hb = (0.70 * eye_hb) + (0.30 * ppg_hb)
         
         logger.info(f"Final Hb prediction: {final_hb:.2f} g/dL")
         
